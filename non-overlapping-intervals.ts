@@ -118,8 +118,10 @@ function findPathFrom(
 }
 
 function eraseOverlapIntervals(intervals: number[][]): number {
+  const sortedByEndTime = [...intervals].sort((a, b) => a[1]! - b[1]!);
+  console.log(sortedByEndTime);
+
   const intervalMap = getIntervalsMap(intervals);
-  // console.log(intervalMap);
   const maxDistance = intervalMap.size;
   let maxTravelledDistance = 0;
 
@@ -133,9 +135,30 @@ function eraseOverlapIntervals(intervals: number[][]): number {
     }
   }
 
-  console.log(intervals.length, maxTravelledDistance, maxDistance);
-
   return intervals.length - maxTravelledDistance;
 }
 
 module.exports = eraseOverlapIntervals;
+
+/*
+sorted with a hint on cinema movie:
+
+[
+  [-35323, -26257],
+  [-36057, -16287],
+  [-27140, -14703],
+  [-15129, -5773],
+  [-8144,  1080],
+  [1937,   6906],
+  [-12098, 16264],
+  [11834,  20971],
+  [-15279, 21851],
+  [-3035,  30075],
+  [19621,  34415],
+  [32985,  36313],
+  [28565,  37578],
+  [44578,  45600],
+  [10508,  46685],
+  [47939,  48626],
+];
+*/
