@@ -2,7 +2,7 @@
   "name": "leetcode",
   "version": "1.0.0",
   "scripts": {
-    "execute": "ts-node execute.ts"
+    "execute": "bun execute.ts"
   },
   "main": "index.js",
   "license": "MIT",

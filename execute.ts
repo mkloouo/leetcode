@@ -24,7 +24,13 @@ function execute() {
 
   const task = require(taskFilePath);
   const taskResult = task(
-    ...process.argv.slice(3).map((argument) => JSON.parse(argument))
+    ...process.argv.slice(3).map((argument) => {
+      try {
+        return JSON.parse(argument);
+      } catch {
+        return argument;
+      }
+    })
   );
 
   console.log("task:", taskName);

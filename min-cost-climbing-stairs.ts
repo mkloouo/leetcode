@@ -30,14 +30,14 @@
 
  */
 
-export default function minCostClimbingStairs(cost: number[]): number {
+function minCostClimbingStairs(cost: number[]): number {
   let totalCost = 0;
   let position = 0;
 
   const winPositions = [cost.length - 1, cost.length - 2];
 
   while (!winPositions.includes(position)) {
-    console.log('pos::', position, 'cost:', totalCost);
+    console.log("pos::", position, "cost:", totalCost);
 
     const first = cost[position];
     const second = cost[position + 1];
@@ -58,4 +58,4 @@ export default function minCostClimbingStairs(cost: number[]): number {
   return totalCost;
 }
 
-module.exports = minCostClimbingStairs
+module.exports = minCostClimbingStairs;
