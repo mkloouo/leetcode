@@ -14,7 +14,9 @@ function execute() {
     return;
   }
 
-  const taskFilePath = path.resolve(path.join(__dirname, `${taskName}.ts`));
+  const taskFilePath = path.resolve(
+    path.join(__dirname, "tasks", `${taskName}.ts`)
+  );
 
   if (!fs.existsSync(taskFilePath)) {
     console.log("usage: execute task-name [task-arguments]");
