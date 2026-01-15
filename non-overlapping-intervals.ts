@@ -28,9 +28,6 @@ intervals[i].length == 2
 -5 * 104 <= starti < endi <= 5 * 104
 */
 
-import process from "process";
-import fs from "fs";
-
 type ProcessedInterval = {
   values: Set<number>;
   maxDistance?: number;
@@ -141,10 +138,4 @@ function eraseOverlapIntervals(intervals: number[][]): number {
   return intervals.length - maxTravelledDistance;
 }
 
-let fileOrInput = process.argv[2]!;
-
-if (fs.existsSync(fileOrInput)) {
-  fileOrInput = fs.readFileSync(fileOrInput, "utf-8");
-}
-
-console.log(eraseOverlapIntervals(JSON.parse(fileOrInput)));
+module.exports = eraseOverlapIntervals;

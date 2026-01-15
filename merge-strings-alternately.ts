@@ -1,5 +1,3 @@
-import process from "process";
-
 function mergeAlternatelyA(word1: string, word2: string): string {
   const totalLength = Math.max(word1.length, word2.length);
   const alternatingArray = [];
@@ -36,4 +34,4 @@ function mergeAlternatelyB(word1: string, word2: string): string {
   return alternatingArray.join("");
 }
 
-console.log(mergeAlternatelyB(process.argv[2]!, process.argv[3]!));
+module.exports = mergeAlternatelyB;

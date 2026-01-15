@@ -12,9 +12,24 @@
  * }
  */
 
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
+
 function maxDepth(root: TreeNode | null): number {
+  if (!root || (root.left === null && root.right === null)) {
+    return 1;
+  }
+
   let depth = 1;
-  const queue = Array.from([root.left, root.right]).filter(
+  const queue = Array.from([root?.left, root?.right]).filter(
     (val) => val !== null
   );
 
@@ -23,6 +38,10 @@ function maxDepth(root: TreeNode | null): number {
 
     for (let i = 0; i < currentDepthItems; ++i) {
       const item = queue.shift();
+      if (!item) {
+        continue;
+      }
+
       if (item.left !== null) {
         queue.push(item.left);
       }
@@ -37,3 +56,5 @@ function maxDepth(root: TreeNode | null): number {
 
   return depth;
 }
+
+module.exports = maxDepth;

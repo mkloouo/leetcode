@@ -40,4 +40,4 @@ function maxVowels(s: string, k: number): number {
   return maxVowels;
 }
 
-console.log(maxVowels(process.argv[2]!, Number(process.argv[3])));
+module.exports = maxVowels;
