@@ -62,7 +62,7 @@ function getIntervalsMap(intervals: number[][]): IntervalsMap {
 function findPathFrom(
   intervalsMap: IntervalsMap,
   from: number,
-  tabs = 0
+  tabs = 0,
 ): number {
   function log(...args: any[]) {
     // console.log("\t".repeat(tabs), ...args);
@@ -87,7 +87,7 @@ function findPathFrom(
       const maxDistanceForGivenDirection = findPathFrom(
         intervalsMap,
         direction,
-        tabs + 1
+        tabs + 1,
       );
       directionMapItem.maxDistance = maxDistanceForGivenDirection;
     }
@@ -117,48 +117,94 @@ function findPathFrom(
   return maxDistance;
 }
 
-function eraseOverlapIntervals(intervals: number[][]): number {
-  const sortedByEndTime = [...intervals].sort((a, b) => a[1]! - b[1]!);
-  console.log(sortedByEndTime);
+function removeAllWithin(
+  intervals: [number, number][],
+  currentInterval: [number, number],
+) {
+  const [, endOfCurrentInterval] = currentInterval;
+  return intervals.filter((interval) => {
+    const [start] = interval;
 
-  const intervalMap = getIntervalsMap(intervals);
-  const maxDistance = intervalMap.size;
-  let maxTravelledDistance = 0;
+    return start >= endOfCurrentInterval;
+  });
+}
 
-  for (const [key, value] of intervalMap) {
-    const travelDistance = findPathFrom(intervalMap, key);
-    maxTravelledDistance = Math.max(maxTravelledDistance, travelDistance);
-    value.maxDistance = travelDistance;
+function findLongestPath(intervals: [number, number][]) {
+  let steps = 0,
+    prevInterval: [number, number] | undefined;
 
-    if (maxTravelledDistance === maxDistance) {
+  while (true) {
+    if (!intervals[0]) {
       break;
     }
+
+    let minIndex = 0,
+      i = 1;
+    while (i < intervals.length) {
+      const cur = intervals[i];
+      const min = intervals[minIndex];
+      if (!min || !cur) {
+        break;
+      }
+
+      if (cur[1] < min[1]) {
+        minIndex = i;
+      }
+
+      ++i;
+    }
+
+    let first = intervals[0];
+    intervals[0] = intervals[minIndex]!;
+    intervals[minIndex] = first;
+
+    // empty array case = we're done
+    const leftMostInterval = intervals.shift();
+    if (!leftMostInterval) {
+      break;
+    }
+
+    // first time saving previous to compare
+    if (!prevInterval) {
+      // need to remove it from the array
+      prevInterval = leftMostInterval;
+      // need to remove everything movie (xD) that started while we were watching the last one
+      intervals = removeAllWithin(intervals, leftMostInterval);
+
+      ++steps;
+      continue;
+    }
+
+    const [startOfLeftMostInterval, endOfLeftMostInterval] = leftMostInterval;
+    if (
+      intervals.some((interval) => {
+        const [start, end] = interval;
+
+        return start >= startOfLeftMostInterval && end <= endOfLeftMostInterval;
+      })
+    ) {
+      continue;
+    }
+
+    const [, endOfPreviousInterval] = prevInterval;
+    if (startOfLeftMostInterval < endOfPreviousInterval) {
+      break;
+    }
+
+    // need to remove it from the array
+    prevInterval = leftMostInterval;
+
+    // need to remove everything movie (xD) that started while we were watching the last one
+    intervals = removeAllWithin(intervals, leftMostInterval);
+
+    ++steps;
   }
 
-  return intervals.length - maxTravelledDistance;
+  return steps;
+}
+
+function eraseOverlapIntervals(intervals: [number, number][]): number {
+  return intervals.length - findLongestPath(intervals);
 }
 
 module.exports = eraseOverlapIntervals;
-
-/*
-sorted with a hint on cinema movie:
-
-[
-  [-35323, -26257],
-  [-36057, -16287],
-  [-27140, -14703],
-  [-15129, -5773],
-  [-8144,  1080],
-  [1937,   6906],
-  [-12098, 16264],
-  [11834,  20971],
-  [-15279, 21851],
-  [-3035,  30075],
-  [19621,  34415],
-  [32985,  36313],
-  [28565,  37578],
-  [44578,  45600],
-  [10508,  46685],
-  [47939,  48626],
-];
-*/

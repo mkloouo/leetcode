@@ -28,7 +28,12 @@ function execute() {
   const taskResult = task(
     ...process.argv.slice(3).map((argument) => {
       try {
-        return JSON.parse(argument);
+        let modifiedArg = argument;
+        if (argument.endsWith('.txt') || argument.endsWith('.json')) {
+          modifiedArg = fs.readFileSync(argument, 'utf-8');
+        }
+
+        return JSON.parse(modifiedArg);
       } catch {
         return argument;
       }
