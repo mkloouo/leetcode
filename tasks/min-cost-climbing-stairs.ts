@@ -30,29 +30,55 @@
 
  */
 
+function calculateNextSteps(cost: number[]) {
+  let [first, second, third, fourth] = cost;
+
+  first = first ?? 0;
+  second = second ?? 0;
+  third = third ?? 0;
+  fourth = fourth ?? 0;
+
+  const options = [
+    {
+      indexes: [0, 2],
+      sum: first + third,
+    },
+    {
+      indexes: [0, 1, 3],
+      sum: first + second + fourth,
+    },
+    {
+      indexes: [1, 2],
+      sum: second + third,
+    },
+    {
+      indexes: [1, 3],
+      sum: second + fourth,
+    },
+  ];
+
+  options.sort((a, b) => a.sum - b.sum);
+
+  const minCostOption = options[0]!;
+
+  return minCostOption.indexes;
+}
+
 function minCostClimbingStairs(cost: number[]): number {
   let totalCost = 0;
-  let position = 0;
 
-  const winPositions = [cost.length - 1, cost.length - 2];
+  while (cost.length !== 0) {
+    const nextSteps = calculateNextSteps(cost);
 
-  while (!winPositions.includes(position)) {
-    console.log("pos::", position, "cost:", totalCost);
+    for (const step of nextSteps) {
+      if (step >= cost.length) {
+        break;
+      }
 
-    const first = cost[position];
-    const second = cost[position + 1];
-
-    if (first === undefined || second === undefined) {
-      return 0;
+      totalCost += Number(cost[step]);
     }
 
-    if (first < second) {
-      totalCost += first;
-      position++;
-    } else {
-      totalCost += second;
-      position += 2;
-    }
+    cost = cost.slice(Number(nextSteps[nextSteps.length - 1]) + 1);
   }
 
   return totalCost;
