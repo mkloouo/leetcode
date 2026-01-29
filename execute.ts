@@ -15,7 +15,7 @@ function execute() {
   }
 
   const taskFilePath = path.resolve(
-    path.join(__dirname, "tasks", `${taskName}.ts`)
+    path.join(__dirname, "tasks", `${taskName}.ts`),
   );
 
   if (!fs.existsSync(taskFilePath)) {
@@ -25,12 +25,14 @@ function execute() {
   }
 
   const task = require(taskFilePath);
-  const taskResult = task(
-    ...process.argv.slice(3).map((argument) => {
+  let showArgs = false;
+  const taskArgs = process.argv
+    .slice(3)
+    .map((argument) => {
       try {
         let modifiedArg = argument;
-        if (argument.endsWith('.txt') || argument.endsWith('.json')) {
-          modifiedArg = fs.readFileSync(argument, 'utf-8');
+        if (argument.endsWith(".txt") || argument.endsWith(".json")) {
+          modifiedArg = fs.readFileSync(argument, "utf-8");
         }
 
         return JSON.parse(modifiedArg);
@@ -38,10 +40,22 @@ function execute() {
         return argument;
       }
     })
-  );
+    .filter((arg) => {
+      if (arg === "-s") {
+        showArgs = true;
+        return false;
+      }
+
+      return true;
+    });
+
+  const taskResult = task(...taskArgs);
 
   console.log("task:", taskName);
   console.log("result:", taskResult);
+  if (showArgs) {
+    console.log("args:", taskArgs);
+  }
 }
 
 execute();
